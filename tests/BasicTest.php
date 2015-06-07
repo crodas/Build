@@ -7,7 +7,7 @@ class BasicTest extends phpunit_framework_testcase
         $GLOBALS['phpunit'] = $this;
         $GLOBALS['builded'] = false;
         $build = new crodas\Build(__DIR__);
-        $build->build1([__FILE__]);
+        $build->build1([__FILE__, __DIR__]);
         $this->assertTrue($GLOBALS['builded']);
         $build->save();
     }
@@ -20,7 +20,7 @@ class BasicTest extends phpunit_framework_testcase
         $GLOBALS['phpunit'] = $this;
         $GLOBALS['builded'] = false;
         $build = new crodas\Build(__DIR__);
-        $this->assertTrue(is_file($build->build1([__FILE__])));
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__])));
         $this->assertFalse($GLOBALS['builded']);
         $build->save();
     }
@@ -34,7 +34,7 @@ class BasicTest extends phpunit_framework_testcase
         $GLOBALS['builded'] = false;
         touch(__DIR__ . '/tasks/one.php', time() + 5);
         $build = new crodas\Build(__DIR__);
-        $this->assertTrue(is_file($build->build1([__FILE__])));
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__])));
         $this->assertTrue($GLOBALS['builded']);
         $build->save();
     }
@@ -49,7 +49,7 @@ class BasicTest extends phpunit_framework_testcase
         touch(__DIR__ . '/tasks/one.php', time() + 15);
         $build = new crodas\Build(__DIR__);
         $build->productionMode();
-        $this->assertTrue(is_file($build->build1([__FILE__])));
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__])));
         $this->assertFalse($GLOBALS['builded']);
     }
 }

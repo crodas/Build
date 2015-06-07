@@ -62,7 +62,7 @@ class Build
         clearstatcache();
         if (!empty($this->times['custom'][$target])) {
             foreach ($this->times['custom'][$target] as $key => $f) {
-                if (is_file($key)) {
+                if (is_readable($key)) {
                     $this->times['custom'][$target][$key] = filemtime($key);
                 } else {
                     unset($this->times['custom'][$target][$key]);
@@ -86,7 +86,7 @@ class Build
         }
         $needsBuild = false;
         foreach ($watching as $file) {
-            if (empty($this->times[$file]) || !is_file($file) || filemtime($file) > $this->times[$file]) {
+            if (empty($this->times[$file]) || !is_readable($file) || filemtime($file) > $this->times[$file]) {
                 $needsBuild = true;
                 break;
             }
