@@ -1,0 +1,22 @@
+{
+    "name": "crodas/build",
+    "description": "Simple build tools",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cesar Rodas",
+            "email": "crodas@php.net"
+        }
+    ],
+	"autoload": {
+		"psr-0": { 
+            "crodas" : "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "crodas/watch-files": "^0.1.6",
+        "crodas/notoj": "^1.0.5"
+    }
+}
