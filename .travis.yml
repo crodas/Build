@@ -1,6 +1,6 @@
 language: php
 script: 
-    - phpunit --coverage-clover=coverage.clover
+    - phpunit 
 
 php:
     - 5.4
