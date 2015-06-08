@@ -12,12 +12,11 @@ class Build
     protected $stack;
     protected $times = array();
     protected $isDry = false;
-    protected $prod  = false;
+    protected static $prod  = false;
 
-    public function productionMode()
+    public static function productionMode()
     {
-        $this->prod = true;
-        return $this;
+        self::$prod = true;
     }
     
     public function save()
@@ -81,8 +80,8 @@ class Build
      */
     protected function needBuilding($target, $watching)
     {
-        if ($this->prod) {
-            return !file_exists($target);
+        if (self::$prod) {
+            return !is_readable($target) || filesize($target) == 0;
         }
         $needsBuild = false;
         foreach ($watching as $file) {
