@@ -86,21 +86,19 @@ class Build
         $needsBuild = false;
         foreach ($watching as $file) {
             if (empty($this->times[$file]) || !is_readable($file) || filemtime($file) > $this->times[$file]) {
-                $needsBuild = true;
-                break;
+                return true;
             }
         }
 
         if (!empty($this->times['custom'][$target])) {
             foreach ($this->times['custom'][$target] as $file => $ts) {
                 if (!is_readable($file) || filemtime($file) > $ts) {
-                    $needsBuild = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        return $needsBuild;
+        return false;
     }
     // }}}
 
