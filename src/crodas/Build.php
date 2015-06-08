@@ -94,7 +94,7 @@ class Build
 
         if (!empty($this->times['custom'][$target])) {
             foreach ($this->times['custom'][$target] as $file => $ts) {
-                if (!is_file($file) || filemtime($file) > $ts) {
+                if (!is_readable($file) || filemtime($file) > $ts) {
                     $needsBuild = true;
                     break;
                 }
