@@ -14,7 +14,7 @@
             "crodas" : "src/"
         }
     },
-    "version": "v0.1.0",
+    "version": "v0.1.1",
     "minimum-stability": "stable",
     "require": {
         "crodas/watch-files": "^0.1.6",
