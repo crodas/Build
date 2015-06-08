@@ -12,12 +12,11 @@ class Build
     protected $stack;
     protected $times = array();
     protected $isDry = false;
-    protected $prod  = false;
+    protected static $prod  = false;
 
-    public function productionMode()
+    public static function productionMode()
     {
-        $this->prod = true;
-        return $this;
+        self::$prod = true;
     }
     
     public function save()
@@ -62,7 +61,7 @@ class Build
         clearstatcache();
         if (!empty($this->times['custom'][$target])) {
             foreach ($this->times['custom'][$target] as $key => $f) {
-                if (is_file($key)) {
+                if (is_readable($key)) {
                     $this->times['custom'][$target][$key] = filemtime($key);
                 } else {
                     unset($this->times['custom'][$target][$key]);
@@ -81,12 +80,12 @@ class Build
      */
     protected function needBuilding($target, $watching)
     {
-        if ($this->prod) {
-            return !file_exists($target);
+        if (self::$prod) {
+            return !is_readable($target) || filesize($target) == 0;
         }
         $needsBuild = false;
         foreach ($watching as $file) {
-            if (empty($this->times[$file]) || !is_file($file) || filemtime($file) > $this->times[$file]) {
+            if (empty($this->times[$file]) || !is_readable($file) || filemtime($file) > $this->times[$file]) {
                 $needsBuild = true;
                 break;
             }
@@ -94,7 +93,7 @@ class Build
 
         if (!empty($this->times['custom'][$target])) {
             foreach ($this->times['custom'][$target] as $file => $ts) {
-                if (!is_file($file) || filemtime($file) > $ts) {
+                if (!is_readable($file) || filemtime($file) > $ts) {
                     $needsBuild = true;
                     break;
                 }
