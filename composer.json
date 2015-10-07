@@ -19,5 +19,8 @@
     "require": {
         "crodas/watch-files": "^0.1.6",
         "crodas/notoj": "^1.0.5"
+    },
+    "require-dev": {
+        "crodas/simple-view-engine": "^0.1"
     }
 }

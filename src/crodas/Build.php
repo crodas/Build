@@ -8,6 +8,7 @@ use Notoj\Filesystem;
 class Build
 {
     protected $notoj;
+    protected $files;
     protected $tmp;
     protected $stack;
     protected $times = array();
@@ -23,11 +24,15 @@ class Build
     {
         if ($this->isDry) {
             $this->times = array_filter($this->times);
-            $content = file_get_contents(__DIR__ . '/Template.php');
-            $content = str_replace('__RETURN__', var_export($this->times, true), $content);
-            File::write($this->tmp, $content);
+            $code = Build\Templates::get('Main')->render(array('self' => $this, 'return' => $this->times), true);
+            File::write($this->tmp, $code);
             $this->isDry = true;
         }
+    }
+
+    public function getTasks()
+    {
+        return $this->tasks;
     }
 
     public function __destruct()
@@ -38,13 +43,22 @@ class Build
     public function __construct($files, $tmp = '')
     {
         $this->tmp   = empty($tmp) ? File::generateFilePath('build', serialize($files)) : $tmp;
-        $this->notoj = new Filesystem((array)$files);
+        $this->files = (array)$files;
+        $doBuild = true;
+        if (is_readable($this->tmp)) {
+            $this->times = (array)include $this->tmp;
+        }
+        if ($doBuild) {
+            $this->doBuild();
+        }
+    }
+
+    public function doBuild()
+    {
+        $this->notoj = new Filesystem($this->files);
         foreach ($this->notoj->get('Task', 'Callable') as $ann) {
             $name = current($ann->getArgs());
             $this->tasks[$name] = $ann->getObject();
-        }
-        if (is_readable($this->tmp)) {
-            $this->times = (array)include $this->tmp;
         }
     }
 
