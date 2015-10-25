@@ -6,8 +6,9 @@ class BasicTest extends phpunit_framework_testcase
     {
         $GLOBALS['phpunit'] = $this;
         $GLOBALS['builded'] = false;
+        $bar = [new Stdclass];
         $build = new crodas\Build(__DIR__);
-        $build->build1([__FILE__, __DIR__]);
+        $build->build1([__FILE__, __DIR__], $bar);
         $this->assertTrue($GLOBALS['builded']);
         $build->save();
     }
@@ -19,8 +20,37 @@ class BasicTest extends phpunit_framework_testcase
     {
         $GLOBALS['phpunit'] = $this;
         $GLOBALS['builded'] = false;
+        $bar = [new Stdclass];
         $build = new crodas\Build(__DIR__);
-        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__])));
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__], $bar)));
+        $this->assertFalse($GLOBALS['builded']);
+        $build->save();
+    }
+
+    /**
+     *  @dependsOn testRebuilDontBuild
+     */
+    public function testRebuildBuildArgs()
+    {
+        $GLOBALS['phpunit'] = $this;
+        $GLOBALS['builded'] = false;
+        $bar = [new Stdclass, 1];
+        $build = new crodas\Build(__DIR__);
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__], $bar)));
+        $this->assertTrue($GLOBALS['builded']);
+        $build->save();
+    }
+
+    /**
+     *  @dependsOn testRebuilBuildArgs
+     */
+    public function testRebuildDonotBuildArgs()
+    {
+        $GLOBALS['phpunit'] = $this;
+        $GLOBALS['builded'] = false;
+        $bar = [new Stdclass, 1];
+        $build = new crodas\Build(__DIR__);
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__], $bar)));
         $this->assertFalse($GLOBALS['builded']);
         $build->save();
     }
@@ -38,8 +68,9 @@ class BasicTest extends phpunit_framework_testcase
         $GLOBALS['phpunit'] = $this;
         $GLOBALS['builded'] = false;
         $this->touch(__DIR__ . '/tasks/one.php');
+        $bar = [new Stdclass];
         $build = new crodas\Build(__DIR__);
-        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__])));
+        $this->assertTrue(is_file($build->build1([__FILE__, __DIR__], $bar)));
         $this->assertTrue($GLOBALS['builded']);
         $build->save();
     }
@@ -53,8 +84,9 @@ class BasicTest extends phpunit_framework_testcase
         $GLOBALS['builded'] = false;
         $this->touch(__DIR__ . '/tasks/one.php');
         crodas\Build::productionMode();
+        $bar = [new Stdclass];
         $build = new crodas\Build(__DIR__);
-        $file  = $build->build1([__FILE__, __DIR__]);
+        $file  = $build->build1([__FILE__, __DIR__], $bar);
         $this->assertTrue(is_file($file));
         $this->assertFalse($GLOBALS['builded']);
 
@@ -62,7 +94,8 @@ class BasicTest extends phpunit_framework_testcase
         $this->assertFalse(is_file($file));
 
         $build = new crodas\Build(__DIR__);
-        $file2 = $build->build1([__FILE__, __DIR__]);
+        $bar = [new Stdclass];
+        $file2 = $build->build1([__FILE__, __DIR__], $bar);
         $this->assertTrue(is_file($file2));
         $this->assertEquals($file, $file2);
         $this->assertTrue($GLOBALS['builded']);
