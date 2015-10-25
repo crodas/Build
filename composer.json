@@ -17,6 +17,7 @@
     "version": "v0.1.1",
     "minimum-stability": "stable",
     "require": {
+        "php": ">=5.4.0",
         "crodas/watch-files": "^0.1.6",
         "crodas/notoj": "^1.0.5"
     },
